@@ -59,7 +59,7 @@ const handleSubmit = async (e) => {
 
   try {
     const res = await axios.post(
-      "https://careersibm-backend-3.onrender.com/app/applications/apply",
+      "https://careersibm-backend-3.onrender.com/api/applications/apply",
       data
     );
 
