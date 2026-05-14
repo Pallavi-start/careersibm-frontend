@@ -18,7 +18,7 @@ export default function AddJobForm({ onJobAdded, onClose }: AddJobFormProps) {
     e.preventDefault();
 
     try {
-      await axios.post("https://careersibm-backend-2.onrender.com/api/jobs", {
+      await axios.post("https://careersibm-backend-3.onrender.com/api/jobs", {
         title,
         company,
         location,

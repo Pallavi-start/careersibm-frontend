@@ -10,7 +10,7 @@ export default function AdminLogin() {
   const handleLogin = async () => {
     try {
       const res = await axios.post(
-        "https://careersibm-backend-2.onrender.com/api/auth/login",
+        "https://careersibm-backend-3.onrender.com/api/login",
         {
           email,
           password,
