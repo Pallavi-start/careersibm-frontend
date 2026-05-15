@@ -16,11 +16,11 @@ export default function ApplyPage() {
   });
 
   const [resume, setResume] = useState<File | null>(null);
-  const [documents, setDocuments] = useState<FileList | null>(null);
 
-  // Handle input change
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >
   ) => {
     setFormData({
       ...formData,
@@ -28,7 +28,6 @@ export default function ApplyPage() {
     });
   };
 
-  // Submit form
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
@@ -44,7 +43,6 @@ export default function ApplyPage() {
 
     const data = new FormData();
 
-    // TEXT FIELDS
     data.append("fullName", formData.fullName);
     data.append("email", formData.email);
     data.append("phone", formData.phone);
@@ -52,25 +50,21 @@ export default function ApplyPage() {
     data.append("skills", formData.skills);
     data.append("experience", formData.experience);
 
-    // FILE: resume (required)
     data.append("resume", resume);
-
-    // FILE: documents (optional multiple)
-    if (documents) {
-      for (let i = 0; i < documents.length; i++) {
-        data.append("documents", documents[i]);
-      }
-    }
 
     try {
       const res = await axios.post(
         `${API_BASE}/api/applications/apply`,
-        data
+        data,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
       );
 
       alert(res.data.message || "Application submitted successfully");
 
-      // RESET FORM
       setFormData({
         fullName: "",
         email: "",
@@ -81,10 +75,8 @@ export default function ApplyPage() {
       });
 
       setResume(null);
-      setDocuments(null);
-
     } catch (err) {
-      console.log(err);
+      console.error(err);
       alert("Submission Failed");
     }
   };
@@ -92,22 +84,20 @@ export default function ApplyPage() {
   return (
     <main className="h-screen overflow-y-auto bg-gray-100 flex items-start justify-center p-6">
       <div className="bg-white w-full max-w-2xl rounded-3xl shadow-2xl p-10 mx-auto my-10">
-
         <h1 className="text-4xl font-bold text-center text-blue-600 mb-3">
           Job Application
         </h1>
 
         <p className="text-center text-gray-500 mb-8 text-lg">
-          Submit your details and documents
+          Submit your details and resume
         </p>
 
         <form onSubmit={handleSubmit} className="space-y-6">
-
           <input
             type="text"
             name="fullName"
             placeholder="Full Name"
-            value={formData.fullName ?? ""}
+            value={formData.fullName}
             onChange={handleChange}
             className="w-full border p-4 rounded-xl"
             required
@@ -117,7 +107,7 @@ export default function ApplyPage() {
             type="email"
             name="email"
             placeholder="Email"
-            value={formData.email ?? ""}
+            value={formData.email}
             onChange={handleChange}
             className="w-full border p-4 rounded-xl"
             required
@@ -127,7 +117,7 @@ export default function ApplyPage() {
             type="tel"
             name="phone"
             placeholder="Phone"
-            value={formData.phone ?? ""}
+            value={formData.phone}
             onChange={handleChange}
             className="w-full border p-4 rounded-xl"
             required
@@ -136,7 +126,7 @@ export default function ApplyPage() {
           <textarea
             name="address"
             placeholder="Address"
-            value={formData.address ?? ""}
+            value={formData.address}
             onChange={handleChange}
             className="w-full border p-4 rounded-xl"
             required
@@ -146,14 +136,14 @@ export default function ApplyPage() {
             type="text"
             name="skills"
             placeholder="Skills"
-            value={formData.skills ?? ""}
+            value={formData.skills}
             onChange={handleChange}
             className="w-full border p-4 rounded-xl"
           />
 
           <select
             name="experience"
-            value={formData.experience ?? ""}
+            value={formData.experience}
             onChange={handleChange}
             className="w-full border p-4 rounded-xl"
           >
@@ -164,7 +154,6 @@ export default function ApplyPage() {
             <option value="3+ Years">3+ Years</option>
           </select>
 
-          {/* RESUME */}
           <input
             type="file"
             onChange={(e) => {
@@ -174,23 +163,12 @@ export default function ApplyPage() {
             required
           />
 
-          {/* DOCUMENTS */}
-          <input
-            type="file"
-            multiple
-            onChange={(e) => {
-              if (e.target.files) setDocuments(e.target.files);
-            }}
-            className="w-full border p-3 rounded-xl"
-          />
-
           <button
             type="submit"
             className="w-full bg-blue-600 text-white p-4 rounded-xl hover:bg-blue-700"
           >
             Submit Application
           </button>
-
         </form>
       </div>
     </main>
