@@ -6,14 +6,12 @@ type JobProps = {
     location: string;
     salary: string;
   };
-
   setShowForm: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 export default function JobCard({ job, setShowForm }: JobProps) {
   return (
-    <div className="border p-4 rounded-xl shadow">
-
+    <div className="border p-4 rounded-xl shadow hover:shadow-lg transition">
       <h2 className="text-xl font-bold">{job.title}</h2>
 
       <p>{job.company}</p>
@@ -26,7 +24,6 @@ export default function JobCard({ job, setShowForm }: JobProps) {
       >
         Apply Now
       </button>
-
     </div>
   );
 }

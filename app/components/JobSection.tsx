@@ -20,7 +20,7 @@ export default function JobSection({ setShowForm }: JobSectionProps) {
   const [jobs, setJobs] = useState<JobType[]>([]);
 
  useEffect(() => {
-  axios.get(`${process.env.NEXT_PUBLIC_API_BASE}/jobs`)
+  axios.get(`${process.env.NEXT_PUBLIC_API_BASE}/api/jobs`)
     .then((res) => setJobs(res.data))
     .catch((err) => console.log(err));
 }, []);
