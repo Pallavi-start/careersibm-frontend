@@ -19,21 +19,15 @@ type JobSectionProps = {
 export default function JobSection({ setShowForm }: JobSectionProps) {
   const [jobs, setJobs] = useState<JobType[]>([]);
 
-  useEffect(() => {
-    const fetchJobs = async () => {
-      try {
-        const res = await axios.get("http://localhost:5000/api/jobs");
-        setJobs(res.data);
-      } catch (err) {
-        console.log("Error fetching jobs:", err);
-      }
-    };
-
-    fetchJobs();
-  }, []);
+ useEffect(() => {
+  axios.get(`${process.env.NEXT_PUBLIC_API_BASE}/jobs`)
+    .then((res) => setJobs(res.data))
+    .catch((err) => console.log(err));
+}, []);
 
   return (
     <section className="p-10">
+
       <h1 className="text-3xl font-bold mb-6">Jobs</h1>
 
       <div className="grid grid-cols-3 gap-4">
