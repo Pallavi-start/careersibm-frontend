@@ -4,11 +4,13 @@ import { useState } from "react";
 import axios from "axios";
 
 type AddJobFormProps = {
-  onJobAdded?: () => void; // optional refresh callback
-  onClose?: () => void; // optional modal close
+  onJobAdded?: () => void;
+  onClose?: () => void;
 };
 
 export default function AddJobForm({ onJobAdded, onClose }: AddJobFormProps) {
+  const API_BASE = process.env.NEXT_PUBLIC_API_BASE;
+
   const [title, setTitle] = useState("");
   const [company, setCompany] = useState("");
   const [location, setLocation] = useState("");
@@ -17,8 +19,13 @@ export default function AddJobForm({ onJobAdded, onClose }: AddJobFormProps) {
   const handleAddJob = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
+    if (!API_BASE) {
+      alert("API not configured");
+      return;
+    }
+
     try {
-      await axios.post("https://careersibm-backend-3.onrender.com/api/jobs", {
+      await axios.post(`${API_BASE}/api/jobs`, {
         title,
         company,
         location,
@@ -27,21 +34,22 @@ export default function AddJobForm({ onJobAdded, onClose }: AddJobFormProps) {
 
       alert("Job added successfully ✅");
 
-      // clear form
       setTitle("");
       setCompany("");
       setLocation("");
       setSalary("");
 
-      // refresh job list (important)
       if (onJobAdded) onJobAdded();
-
-      // close modal (if used)
       if (onClose) onClose();
 
-    } catch (err) {
-      console.log("Error adding job:", err);
-      alert("Failed to add job ❌");
+    } catch (err: unknown) {
+      if (axios.isAxiosError(err)) {
+        console.log(err.response?.data || err.message);
+        alert(err.response?.data?.message || "Failed to add job ❌");
+      } else {
+        console.log(err);
+        alert("Failed to add job ❌");
+      }
     }
   };
 

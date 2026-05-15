@@ -3,9 +3,9 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 
-const API_BASE = "https://careersibm-backend-3.onrender.com";
-
 export default function Admin() {
+  const API_BASE = process.env.NEXT_PUBLIC_API_BASE;
+
   const [applications, setApplications] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -14,13 +14,22 @@ export default function Admin() {
       try {
         const token = localStorage.getItem("token");
 
-        const res = await axios.get(`${API_BASE}/api/applications`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        if (!API_BASE) {
+          console.error("API BASE URL is missing in .env");
+          setLoading(false);
+          return;
+        }
 
-        setApplications(res.data);
+        const res = await axios.get(
+          `${API_BASE}/api/applications`,
+          {
+            headers: {
+              Authorization: `Bearer ${token || ""}`,
+            },
+          }
+        );
+
+        setApplications(res.data || []);
       } catch (err) {
         console.log("Error fetching applications:", err);
       } finally {
@@ -29,7 +38,7 @@ export default function Admin() {
     };
 
     fetchApplications();
-  }, []);
+  }, [API_BASE]);
 
   if (loading) {
     return (
@@ -72,7 +81,6 @@ export default function Admin() {
                 <td>{app.skills}</td>
                 <td>{app.experience}</td>
 
-                {/* ✅ CLOUDINARY RESUME LINK */}
                 <td>
                   {app.resume ? (
                     <a
@@ -91,15 +99,15 @@ export default function Admin() {
                 <td>
                   <span
                     style={{
-                      padding: "4px 8px",
+                      padding: "5px 10px",
+                      borderRadius: "5px",
+                      color: "white",
                       background:
                         app.status === "approved"
                           ? "green"
                           : app.status === "rejected"
                           ? "red"
                           : "orange",
-                      color: "white",
-                      borderRadius: "5px",
                     }}
                   >
                     {app.status || "pending"}

@@ -4,6 +4,7 @@ import { useState } from "react";
 import axios from "axios";
 
 export default function ApplyPage() {
+  const API_BASE = process.env.NEXT_PUBLIC_API_BASE;
 
   const [formData, setFormData] = useState({
     fullName: "",
@@ -15,70 +16,83 @@ export default function ApplyPage() {
   });
 
   const [resume, setResume] = useState<File | null>(null);
-
   const [documents, setDocuments] = useState<FileList | null>(null);
 
-
-  // Handle Input Change
+  // Handle input change
   const handleChange = (
-    e: React.ChangeEvent<
-      HTMLInputElement |
-      HTMLTextAreaElement |
-      HTMLSelectElement
-    >
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
-
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
     });
-
   };
 
+  // Submit form
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
 
-  // Submit Form
-const handleSubmit = async (e) => {
-  e.preventDefault();
-
-  const data = new FormData();
-
-  data.append("fullName", formData.fullName);
-  data.append("email", formData.email);
-  data.append("phone", formData.phone);
-  data.append("address", formData.address);
-  data.append("skills", formData.skills);
-  data.append("experience", formData.experience);
-
-  if (resume) data.append("resume", resume);
-
-  if (documents) {
-    for (let i = 0; i < documents.length; i++) {
-      data.append("documents", documents[i]);
+    if (!API_BASE) {
+      alert("Backend URL not configured");
+      return;
     }
-  }
 
-  try {
-    const res = await axios.post(
-      "https://careersibm-backend-3.onrender.com/api/applications/apply",
-      data
-    );
+    if (!resume) {
+      alert("Please upload resume");
+      return;
+    }
 
-    alert(res.data.message);
+    const data = new FormData();
 
-  } catch (err) {
-    console.log(err.response?.data || err.message);
-    alert("Submission Failed");
-  }
-};
+    // TEXT FIELDS
+    data.append("fullName", formData.fullName);
+    data.append("email", formData.email);
+    data.append("phone", formData.phone);
+    data.append("address", formData.address);
+    data.append("skills", formData.skills);
+    data.append("experience", formData.experience);
 
+    // FILE: resume (required)
+    data.append("resume", resume);
+
+    // FILE: documents (optional multiple)
+    if (documents) {
+      for (let i = 0; i < documents.length; i++) {
+        data.append("documents", documents[i]);
+      }
+    }
+
+    try {
+      const res = await axios.post(
+        `${API_BASE}/api/applications/apply`,
+        data
+      );
+
+      alert(res.data.message || "Application submitted successfully");
+
+      // RESET FORM
+      setFormData({
+        fullName: "",
+        email: "",
+        phone: "",
+        address: "",
+        skills: "",
+        experience: "",
+      });
+
+      setResume(null);
+      setDocuments(null);
+
+    } catch (err) {
+      console.log(err);
+      alert("Submission Failed");
+    }
+  };
 
   return (
-
     <main className="h-screen overflow-y-auto bg-gray-100 flex items-start justify-center p-6">
-
       <div className="bg-white w-full max-w-2xl rounded-3xl shadow-2xl p-10 mx-auto my-10">
 
-        {/* Heading */}
         <h1 className="text-4xl font-bold text-center text-blue-600 mb-3">
           Job Application
         </h1>
@@ -87,186 +101,98 @@ const handleSubmit = async (e) => {
           Submit your details and documents
         </p>
 
+        <form onSubmit={handleSubmit} className="space-y-6">
 
-        {/* Form */}
-        <form
-          onSubmit={handleSubmit}
-          className="space-y-6"
-        >
+          <input
+            type="text"
+            name="fullName"
+            placeholder="Full Name"
+            value={formData.fullName ?? ""}
+            onChange={handleChange}
+            className="w-full border p-4 rounded-xl"
+            required
+          />
 
+          <input
+            type="email"
+            name="email"
+            placeholder="Email"
+            value={formData.email ?? ""}
+            onChange={handleChange}
+            className="w-full border p-4 rounded-xl"
+            required
+          />
 
-          {/* Full Name */}
-          <div>
+          <input
+            type="tel"
+            name="phone"
+            placeholder="Phone"
+            value={formData.phone ?? ""}
+            onChange={handleChange}
+            className="w-full border p-4 rounded-xl"
+            required
+          />
 
-            <label className="block mb-2 text-sm font-semibold text-gray-700">
-              Full Name
-            </label>
+          <textarea
+            name="address"
+            placeholder="Address"
+            value={formData.address ?? ""}
+            onChange={handleChange}
+            className="w-full border p-4 rounded-xl"
+            required
+          />
 
-            <input
-              type="text"
-              name="fullName"
-              onChange={handleChange}
-              placeholder="Enter full name"
-              className="w-full border border-gray-300 rounded-xl px-5 py-4 text-base outline-none focus:border-blue-500"
-            />
+          <input
+            type="text"
+            name="skills"
+            placeholder="Skills"
+            value={formData.skills ?? ""}
+            onChange={handleChange}
+            className="w-full border p-4 rounded-xl"
+          />
 
-          </div>
+          <select
+            name="experience"
+            value={formData.experience ?? ""}
+            onChange={handleChange}
+            className="w-full border p-4 rounded-xl"
+          >
+            <option value="">Select Experience</option>
+            <option value="Fresher">Fresher</option>
+            <option value="1 Year">1 Year</option>
+            <option value="2 Years">2 Years</option>
+            <option value="3+ Years">3+ Years</option>
+          </select>
 
+          {/* RESUME */}
+          <input
+            type="file"
+            onChange={(e) => {
+              if (e.target.files) setResume(e.target.files[0]);
+            }}
+            className="w-full border p-3 rounded-xl"
+            required
+          />
 
-          {/* Email */}
-          <div>
+          {/* DOCUMENTS */}
+          <input
+            type="file"
+            multiple
+            onChange={(e) => {
+              if (e.target.files) setDocuments(e.target.files);
+            }}
+            className="w-full border p-3 rounded-xl"
+          />
 
-            <label className="block mb-2 text-sm font-semibold text-gray-700">
-              Email Address
-            </label>
-
-            <input
-              type="email"
-              name="email"
-              onChange={handleChange}
-              placeholder="Enter email"
-              className="w-full border border-gray-300 rounded-xl px-5 py-4 text-base outline-none focus:border-blue-500"
-            />
-
-          </div>
-
-
-          {/* Phone */}
-          <div>
-
-            <label className="block mb-2 text-sm font-semibold text-gray-700">
-              Phone Number
-            </label>
-
-            <input
-              type="tel"
-              name="phone"
-              onChange={handleChange}
-              placeholder="Enter phone number"
-              className="w-full border border-gray-300 rounded-xl px-5 py-4 text-base outline-none focus:border-blue-500"
-            />
-
-          </div>
-
-
-          {/* Address */}
-          <div>
-
-            <label className="block mb-2 text-sm font-semibold text-gray-700">
-              Address
-            </label>
-
-            <textarea
-              name="address"
-              rows={4}
-              onChange={handleChange}
-              placeholder="Enter address"
-              className="w-full border border-gray-300 rounded-xl px-5 py-4 text-base outline-none focus:border-blue-500"
-            />
-
-          </div>
-
-
-          {/* Skills */}
-          <div>
-
-            <label className="block mb-2 text-sm font-semibold text-gray-700">
-              Skills
-            </label>
-
-            <input
-              type="text"
-              name="skills"
-              onChange={handleChange}
-              placeholder="React.js, Node.js, MongoDB"
-              className="w-full border border-gray-300 rounded-xl px-5 py-4 text-base outline-none focus:border-blue-500"
-            />
-
-          </div>
-
-
-          {/* Experience */}
-          <div>
-
-            <label className="block mb-2 text-sm font-semibold text-gray-700">
-              Experience
-            </label>
-
-            <select
-              name="experience"
-              onChange={handleChange}
-              className="w-full border border-gray-300 rounded-xl px-5 py-4 text-base outline-none focus:border-blue-500"
-            >
-
-              <option value="">Select Experience</option>
-              <option value="Fresher">Fresher</option>
-              <option value="1 Year">1 Year</option>
-              <option value="2 Years">2 Years</option>
-              <option value="3+ Years">3+ Years</option>
-
-            </select>
-
-          </div>
-
-
-          {/* Resume Upload */}
-          <div>
-
-            <label className="block mb-2 text-sm font-semibold text-gray-700">
-              Upload Resume
-            </label>
-
-            <input
-              type="file"
-              onChange={(e) => {
-
-                if (e.target.files) {
-                  setResume(e.target.files[0]);
-                }
-
-              }}
-              className="w-full border border-gray-300 rounded-xl px-4 py-3"
-            />
-
-          </div>
-
-
-          {/* Documents Upload */}
-          <div>
-
-            <label className="block mb-2 text-sm font-semibold text-gray-700">
-              Upload Documents
-            </label>
-
-            <input
-              type="file"
-              multiple
-              onChange={(e) => {
-
-                if (e.target.files) {
-                  setDocuments(e.target.files);
-                }
-
-              }}
-              className="w-full border border-gray-300 rounded-xl px-4 py-3"
-            />
-
-          </div>
-
-
-          {/* Submit Button */}
           <button
             type="submit"
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white py-4 rounded-xl font-semibold text-lg transition"
+            className="w-full bg-blue-600 text-white p-4 rounded-xl hover:bg-blue-700"
           >
             Submit Application
           </button>
 
         </form>
-
       </div>
-
     </main>
-
   );
 }
