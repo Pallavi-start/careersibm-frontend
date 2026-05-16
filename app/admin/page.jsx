@@ -8,6 +8,21 @@ export default function Admin() {
 
   const [applications, setApplications] = useState([]);
   const [loading, setLoading] = useState(true);
+  const downloadResume = async (url) => {
+  const response = await fetch(url);
+  const blob = await response.blob();
+
+  const blobUrl = window.URL.createObjectURL(blob);
+
+  const a = document.createElement("a");
+  a.href = blobUrl;
+  a.download = "resume.pdf";
+  document.body.appendChild(a);
+  a.click();
+
+  document.body.removeChild(a);
+  window.URL.revokeObjectURL(blobUrl);
+};
 
   useEffect(() => {
     const fetchApplications = async () => {
@@ -47,6 +62,10 @@ export default function Admin() {
       </div>
     );
   }
+  const openResume = (url) => {
+  const viewer = `https://docs.google.com/gview?url=${url}&embedded=true`;
+  window.open(viewer, "_blank", "noopener,noreferrer");
+};
 
   return (
     <div style={{ padding: "20px" }}>
@@ -82,18 +101,21 @@ export default function Admin() {
                 <td>{app.experience}</td>
 
                 <td>
-                  {app.resume ? (
-                    <a
-                      href={app.resume}
-                      target="_blank"
-                      rel="noreferrer"
-                      style={{ color: "blue" }}
-                    >
-                      View Resume
-                    </a>
-                  ) : (
-                    "No Resume"
-                  )}
+            <button
+  onClick={() => openResume(app.resume)}
+  style={{ color: "blue", background: "none", border: "none", cursor: "pointer" }}
+>
+  View Resume
+</button>
+<td>
+  <button onClick={() => window.open(app.resume, "_blank")}>
+    View
+  </button>
+
+  <button onClick={() => downloadResume(app.resume)}>
+    Download
+  </button>
+</td>
                 </td>
 
                 <td>
