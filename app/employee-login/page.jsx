@@ -3,19 +3,25 @@
 import { useState } from "react";
 import axios from "axios";
 
-export default function AdminLogin() {
-  const API_BASE = process.env.NEXT_PUBLIC_API_BASE;
+export default function EmployeeLogin() {
+  const API_BASE =
+    process.env.NEXT_PUBLIC_API_BASE;
 
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [email, setEmail] =
+    useState("");
+
+  const [password, setPassword] =
+    useState("");
+
+  const [loading, setLoading] =
+    useState(false);
 
   const handleLogin = async () => {
     try {
       setLoading(true);
 
       const res = await axios.post(
-        `${API_BASE}/api/auth/login`,
+        `${API_BASE}/api/employee/login`,
         {
           email,
           password,
@@ -23,13 +29,14 @@ export default function AdminLogin() {
       );
 
       localStorage.setItem(
-        "token",
+        "employeeToken",
         res.data.token
       );
 
-      alert("Login Success");
+      alert("Employee Login Success");
 
-      window.location.href = "/admin";
+      window.location.href =
+        "/employee/dashboard";
 
     } catch (err) {
       console.log(err);
@@ -65,19 +72,17 @@ export default function AdminLogin() {
           borderRadius: "20px",
           boxShadow:
             "0 0 25px rgba(59,130,246,0.2)",
-          border: "1px solid #1f2937",
         }}
       >
         <h1
           style={{
             color: "white",
-            fontSize: "32px",
-            fontWeight: "bold",
-            marginBottom: "10px",
             textAlign: "center",
+            marginBottom: "10px",
+            fontSize: "32px",
           }}
         >
-          Admin Login
+          Employee Login
         </h1>
 
         <p
@@ -87,7 +92,7 @@ export default function AdminLogin() {
             marginBottom: "30px",
           }}
         >
-          IBM Careers Dashboard Access
+          IBM Careers Employee Portal
         </p>
 
         <input
@@ -105,8 +110,6 @@ export default function AdminLogin() {
             border: "1px solid #374151",
             background: "#000",
             color: "white",
-            outline: "none",
-            fontSize: "15px",
           }}
         />
 
@@ -125,8 +128,6 @@ export default function AdminLogin() {
             border: "1px solid #374151",
             background: "#000",
             color: "white",
-            outline: "none",
-            fontSize: "15px",
           }}
         />
 
@@ -143,7 +144,6 @@ export default function AdminLogin() {
             cursor: "pointer",
             fontSize: "16px",
             fontWeight: "bold",
-            transition: "0.3s",
           }}
         >
           {loading
