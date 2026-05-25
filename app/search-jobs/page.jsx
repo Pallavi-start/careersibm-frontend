@@ -11,7 +11,7 @@ export default function SearchJobsPage() {
      const [showForm, setShowForm] = useState(false);
   return (
     <>
-      <div className="min-h-[50vh] bg-[#dceaf1] px-6 md:px-16 py-6">
+      <div className="min-h-[60vh] bg-[#dceaf1] px-6 md:px-16 py-6">
 
         <div className="text-sm md:text-base mb-8 flex gap-2">
           <Link href="/">Home</Link>
@@ -39,7 +39,7 @@ export default function SearchJobsPage() {
   alt="Image"
   width={500}
   height={500}
-  className="w-40"
+  className="w-100"
   style={{ height: "auto" }}
 />
           </div>
