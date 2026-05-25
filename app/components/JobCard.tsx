@@ -1,3 +1,7 @@
+"use client";
+
+import { useRouter } from "next/navigation";
+
 type JobProps = {
   job: {
     _id: string;
@@ -10,19 +14,36 @@ type JobProps = {
 };
 
 export default function JobCard({ job, setShowForm }: JobProps) {
-  return (
-    <div className="border p-4 rounded-xl shadow hover:shadow-lg transition">
-      <h2 className="text-xl font-bold">{job.title}</h2>
+  const router = useRouter();
 
+  const handleApply = () => {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      alert("Please login first");
+      router.push("/login");
+      return;
+    }
+
+    setShowForm(true);   // popup opens
+  };
+
+  return (
+    <div className="border bg-white p-6 min-h-[320px]">
       <p>{job.company}</p>
+
+      <h2 className="text-3xl font-light mt-3 mb-20">
+        {job.title}
+      </h2>
+
       <p>{job.location}</p>
       <p>₹ {job.salary}</p>
 
       <button
-        onClick={() => setShowForm(true)}
-        className="mt-3 bg-black text-white px-4 py-2 rounded"
+        onClick={handleApply}
+        className="text-blue-600 text-4xl mt-6"
       >
-        Apply Now
+        →
       </button>
     </div>
   );

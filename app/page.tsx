@@ -2,11 +2,9 @@
 
 import { useState } from "react";
 
-import Navbar from "./components/Navbar";
-import Hero from "./components/Hero";
-import Footer from "./components/Footer";
-import JobSection from "./components/JobSection";
-import ApplyPage from "./components/ApplyPage";
+import HeroVideoSlider from "./components/HeroVideoSlider";
+
+
 
 export default function Home() {
   const [showForm, setShowForm] = useState(false);
@@ -14,13 +12,13 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-white">
 
-      <Navbar />
+      
 
-      <Hero />
+      <HeroVideoSlider />
 
-      <JobSection setShowForm={setShowForm} />
+     
 
-      <Footer />
+     
 
       {/* ================= APPLY MODAL ================= */}
       {showForm && (
@@ -40,7 +38,7 @@ export default function Home() {
               X
             </button>
 
-            <ApplyPage />
+            
           </div>
         </div>
       )}

@@ -3,7 +3,7 @@
 import { useState } from "react";
 import axios from "axios";
 
-export default function ApplyPage() {
+export default function ApplyPage({ setShowForm }) {
   const API_BASE = process.env.NEXT_PUBLIC_API_BASE;
 
   const [formData, setFormData] = useState({
@@ -14,6 +14,7 @@ export default function ApplyPage() {
     skills: "",
     experience: "",
   });
+
 
   const [resume, setResume] = useState<File | null>(null);
 
@@ -28,63 +29,93 @@ export default function ApplyPage() {
     });
   };
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const handleSubmit = async (
+  e: React.FormEvent<HTMLFormElement>
+) => {
 
-    if (!API_BASE) {
-      alert("Backend URL not configured");
-      return;
-    }
+  e.preventDefault();
 
-    if (!resume) {
-      alert("Please upload resume");
-      return;
-    }
+  // CHECK LOGIN
+  const token = localStorage.getItem("token");
 
-    const data = new FormData();
+  if (!token) {
+    alert("Please login first");
+    return;
+  }
 
-    data.append("fullName", formData.fullName);
-    data.append("email", formData.email);
-    data.append("phone", formData.phone);
-    data.append("address", formData.address);
-    data.append("skills", formData.skills);
-    data.append("experience", formData.experience);
+  if (!API_BASE) {
+    alert("Backend URL not configured");
+    return;
+  }
 
-    data.append("resume", resume);
+  if (!resume) {
+    alert("Please upload resume");
+    return;
+  }
 
-    try {
-      const res = await axios.post(
-        `${API_BASE}/api/applications/apply`,
-        data,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
+  const data = new FormData();
 
-      alert(res.data.message || "Application submitted successfully");
+  data.append("fullName", formData.fullName);
+  data.append("email", formData.email);
+  data.append("phone", formData.phone);
+  data.append("address", formData.address);
+  data.append("skills", formData.skills);
+  data.append("experience", formData.experience);
 
-      setFormData({
-        fullName: "",
-        email: "",
-        phone: "",
-        address: "",
-        skills: "",
-        experience: "",
-      });
+  data.append("resume", resume);
 
-      setResume(null);
-    } catch (err) {
-      console.error(err);
-      alert("Submission Failed");
-    }
-  };
+  try {
 
+    const res = await axios.post(
+      `${API_BASE}/api/applications/apply`,
+      data,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
+
+    alert(
+      res.data.message ||
+      "Application submitted successfully"
+    );
+
+    setFormData({
+      fullName: "",
+      email: "",
+      phone: "",
+      address: "",
+      skills: "",
+      experience: "",
+    });
+
+    setResume(null);
+
+    setShowForm(false);
+
+  } catch (err) {
+
+    console.error(err);
+
+    alert("Submission Failed");
+  }
+};
   return (
-    <main className="h-screen overflow-y-auto bg-gray-100 flex items-start justify-center p-6">
-      <div className="bg-white w-full max-w-2xl rounded-3xl shadow-2xl p-10 mx-auto my-10">
-        <h1 className="text-4xl font-bold text-center text-blue-600 mb-3">
+   
+  <main className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-6 overflow-y-auto">
+
+   <div className="bg-white w-full max-w-lg rounded-2xl shadow-2xl p-6 mx-auto relative overflow-visible max-h-[90vh] overflow-y-auto">
+
+      <button
+  type="button"
+  onClick={() => setShowForm(false)}
+  className="absolute top-4 right-4 z-[100] flex h-10 w-10 items-center justify-center rounded-full bg-gray-200 text-black text-3xl font-bold shadow-md hover:bg-gray-300"
+>
+  ×
+</button>
+        <h1 className="text-2xl font-bold text-center text-blue-600 mb-3">
           Job Application
         </h1>
 
