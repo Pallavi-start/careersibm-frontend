@@ -112,7 +112,7 @@ export default function ProfilePage() {
       alert("Profile saved successfully");
 
       // ✅ redirect after success
-      router.push("/Search-jobs");
+      router.push("/search-jobs");
 
 
     } catch (error) {
