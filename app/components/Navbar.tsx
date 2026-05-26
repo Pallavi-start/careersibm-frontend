@@ -23,12 +23,15 @@ export default function Navbar() {
         <div className="flex items-center gap-5 md:gap-10">
           
           {/* MOBILE MENU ICON */}
-          <button className="md:hidden text-2xl text-[#393939]">
-            ☰
-          </button>
+<button
+  onClick={() => setMobileMenu(!mobileMenu)}
+  className="md:hidden text-2xl text-[#393939]"
+>
+  ☰
+</button>
 
           {/* LOGO */}
-          <Link href="/login">
+          <Link href="">
             <Image
   src="/IBM.png"
   alt="IBM"
@@ -311,12 +314,12 @@ export default function Navbar() {
               Be aware: recruitment scams
             </Link>
 
-            <Link
-              href=""
-              className="px-5 py-5 border-b border-gray-200"
-            >
-              Search Jobs
-            </Link>
+           <Link
+  href="/search-jobs"
+  className="px-5 py-5 border-b border-gray-200"
+>
+  Search Jobs
+</Link>
 
             <Link
               href="/connect"
