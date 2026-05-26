@@ -6,6 +6,9 @@ import { useState } from "react";
 import { ChevronDown, Globe } from "lucide-react";
 import InfrastructureDropdown from "./InfrastructureDropdown";
 import SupportDropdown from "./SupportDropdown";
+import LifeAtIBM from "./LifeAtIBM";
+import EntryLevelPage from "./EntryLevelPage";
+import HiringProcess from "./HiringProcess"
 
 export default function Navbar() {
   const [mobileMenu, setMobileMenu] = useState(false);
@@ -229,7 +232,7 @@ export default function Navbar() {
 
             {/* THINK */}
             <Link
-              href="/think"
+              href="/"
               className="hover:text-black transition h-[60px] flex items-center px-5 hover:bg-[#f4f4f4]"
             >
               Think
@@ -302,7 +305,7 @@ export default function Navbar() {
             </Link>
 
             <Link
-              href="/recruitment-scams"
+              href="/recruitmentScams"
               className="px-5 py-5 border-b border-gray-200"
             >
               Be aware: recruitment scams
@@ -339,7 +342,7 @@ export default function Navbar() {
         {/* LEFT SIDE */}
         <div className="flex items-center gap-8">
           
-          <Link href="/careers">
+          <Link href="/">
             <h2 className="text-[15px] font-semibold text-black cursor-pointer">
               IBM Careers
             </h2>
@@ -347,12 +350,7 @@ export default function Navbar() {
 
           <div className="flex items-center gap-8 text-[15px] font-normal text-[#393939]">
             
-            <Link
-              href="/life-at-ibm"
-              className="hover:text-black transition"
-            >
-              Life @ IBM
-            </Link>
+            <LifeAtIBM />
 
             <Link
               href="/career-areas"
@@ -361,22 +359,11 @@ export default function Navbar() {
               Career Areas
             </Link>
 
-            <Link
-              href="/entry-level"
-              className="hover:text-black transition"
-            >
-              Entry level
-            </Link>
+           <EntryLevelPage/>
+           <HiringProcess />
 
             <Link
-              href="/hiring-process"
-              className="hover:text-black transition"
-            >
-              Hiring Process
-            </Link>
-
-            <Link
-              href="/recruitment-scams"
+              href="/recruitmentScams"
               className="h-[60px] flex items-center   text-black"
             >
               Be aware: recruitment scams
