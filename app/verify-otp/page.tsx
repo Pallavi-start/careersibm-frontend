@@ -28,7 +28,7 @@ export default function OTP() {
         otp,
       });
 
-      router.push("/login");
+      router.push("/dashboard");
 
     } catch (err: unknown) {
 

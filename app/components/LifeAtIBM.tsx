@@ -22,19 +22,19 @@ export default function LifeAtIBM() {
       {/* Dropdown */}
       {open && (
         <div className="absolute left-0 top-full w-64 bg-white border border-gray-200 shadow-md z-50">
-          <Link href="/culture" className="block px-5 py-4 hover:bg-gray-100">
+          <Link href="" className="block px-5 py-4 hover:bg-gray-100">
             Culture
           </Link>
 
           <Link
-            href="/careers-blog"
+            href=""
             className="block px-5 py-4 hover:bg-gray-100"
           >
             Careers blog
           </Link>
 
           <Link
-            href="/locations"
+            href=""
             className="block px-5 py-4 hover:bg-gray-100"
           >
             Locations

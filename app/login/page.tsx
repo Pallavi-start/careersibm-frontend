@@ -64,7 +64,7 @@ export default function LoginPage() {
 
       localStorage.setItem("token", token);
 
-      router.push("/");
+      router.push("/dashboard");
 
     } catch (err: unknown) {
 
