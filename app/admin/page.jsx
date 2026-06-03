@@ -2,29 +2,23 @@
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import AdminSidebar from "../components/AdminSidebar";
 
-export default function AdminLayout({
-  children,
-}) {
+export default function AdminPage() {
   const router = useRouter();
 
   useEffect(() => {
-    const token =
-      localStorage.getItem("token");
+    const token = localStorage.getItem("token");
 
     if (!token) {
-      router.replace("/admin/login");
+      router.replace("/admin-login");
+    } else {
+      router.replace("/admin/dashboard");
     }
   }, [router]);
 
   return (
-    <div className="flex min-h-screen bg-gray-100">
-      <AdminSidebar />
-
-      <main className="flex-1 p-6">
-        {children}
-      </main>
+    <div className="flex items-center justify-center min-h-screen">
+      Loading...
     </div>
   );
 }
