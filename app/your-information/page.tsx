@@ -49,6 +49,7 @@ type UserType = {
     writtenLevel?: string;
     spokenLevel?: string;
   }[];
+
 };
 
 export default function YourInformation() {

@@ -44,7 +44,7 @@
     "**/*.mts",
     "**/*.ts",
     "**/*.tsx"
-,   ],
+, "app/admin/page.jsx", "app/admin/login/page.jsx", "app/admin/jobs/page.jsx", "app/admin/dashboard/page.jsx", "app/admin/applications/page.jsx", "app/layout.jsx",   ],
 
   "exclude": [
     "node_modules"

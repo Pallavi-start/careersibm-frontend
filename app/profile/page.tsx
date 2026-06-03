@@ -766,8 +766,11 @@ if (documents) {
 
           {/* FILES */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-14">
-
-            <input
+            <div>
+              <label className="block mb-3 text-lg">
+              Upload resume
+             </label>
+               <input
               type="file"
               className="border p-3 bg-gray-100"
               onChange={(e) =>
@@ -777,8 +780,18 @@ if (documents) {
                 )
               }
             />
-
-            <input
+            {resume && (
+  <p className="text-green-600 text-sm mt-2">
+    Selected: {resume.name}
+  </p>
+)}
+            </div>
+           
+            <div>
+              <label className="block mb-3 text-lg">
+              Upload CoverLetter
+             </label>
+                 <input
               type="file"
               className="border p-3 bg-gray-100"
               onChange={(e) =>
@@ -788,7 +801,13 @@ if (documents) {
                 )
               }
             />
-
+            </div>
+         
+            {coverLetterFile && (
+       <p className="text-green-600 text-sm mt-2">
+         Selected: {coverLetterFile.name}
+       </p>
+         )}
           </div>
 <div className="mt-10">
 
@@ -804,6 +823,11 @@ if (documents) {
       setDocuments(e.target.files)
     }
   />
+  {documents && (
+  <p className="text-green-600 text-sm mt-2">
+    {documents.length} files selected
+  </p>
+)}
 
 </div>
           {/* BUTTON */}

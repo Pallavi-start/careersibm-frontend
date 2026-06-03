@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
-import { FcGoogle } from "react-icons/fc";
+
 import Image from "next/image";
 import Link from "next/link";
 import { API } from "../lib/api";
@@ -347,35 +347,8 @@ export default function LoginPage() {
         </div>
 
         {/* GOOGLE */}
-        <div className="mt-8">
-
-          <p className="text-[13px] text-gray-600 mb-3">
-            Alternative login
-          </p>
-
-          <button
-            className="
-              w-full
-              h-[48px]
-              border
-              border-[#0f62fe]
-              hover:bg-blue-50
-              transition
-              flex
-              items-center
-              justify-between
-              px-5
-              text-[14px]
-              text-[#0f62fe]
-            "
-          >
-            Continue with Google
-
-            <FcGoogle size={20} />
-          </button>
-
-        </div>
-
+       
+       
       </div>
 
       {/* RIGHT SIDE */}

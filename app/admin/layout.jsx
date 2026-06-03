@@ -14,7 +14,7 @@ export default function AdminLayout({
       localStorage.getItem("token");
 
     if (!token) {
-      router.replace("/admin/login");
+      router.replace("/admin-login");
     }
   }, [router]);
 

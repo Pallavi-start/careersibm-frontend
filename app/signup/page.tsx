@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import { API } from "../lib/api";
-import { FcGoogle } from "react-icons/fc";
+
 
 type SignupData = {
   firstName: string;
@@ -153,29 +153,9 @@ export default function SignupPage() {
     </p>
 
     {/* GOOGLE */}
-    <div className="flex justify-end mt-8">
 
-      <button
-        className="
-          border
-          border-[#0f62fe]
-          h-[48px]
-          px-5
-          flex
-          items-center
-          gap-4
-          text-[#0f62fe]
-          hover:bg-blue-50
-        "
-      >
-        <span className="text-[15px]">
-          Sign up with Google
-        </span>
 
-        <FcGoogle size={24} />
-      </button>
-
-    </div>
+      
 
     {/* DIVIDER */}
     <div className="border-t border-gray-300 mt-6"></div>
@@ -390,15 +370,10 @@ export default function SignupPage() {
 
           <div className="w-4 h-4 rounded-full border border-gray-400 border-dashed"></div>
 
-          <span className="text-[16px]">
-            Verify email
-          </span>
-
+          
         </div>
 
-        <span className="text-lg">
-          ˅
-        </span>
+        
 
       </div>
 
