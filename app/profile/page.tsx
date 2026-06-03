@@ -252,7 +252,7 @@ if (documents) {
   API.updateProfile,
   formData
 );
-
+console.log(response.data.profile);
       // SAVE LOCAL STORAGE
      localStorage.setItem(
   "user",
@@ -277,9 +277,9 @@ if (documents) {
     educationHistory,
     languages,
 
-    resume: response.data.resume,
-    coverLetter: response.data.coverLetter,
-    documents: response.data.documents,
+    resume: response.data.profile.resume,
+coverLetter: response.data.profile.coverLetter,
+documents: response.data.profile.documents,
   })
 );
 
