@@ -1,81 +1,89 @@
 "use client";
 
-import { useState } from "react";
+
 import { API } from "../lib/api";
 import { useRouter } from "next/navigation";
 import axios from "axios";
+import { useState } from "react";
 
 export default function ProfilePage() {
 
   const router = useRouter();
+  const storedUser =
+  typeof window !== "undefined"
+    ? JSON.parse(
+        localStorage.getItem("user") || "{}"
+      )
+    : {};
 
   // FILES
-  const [resume, setResume] =
-    useState<File | null>(null);
-
-  const [coverLetterFile, setCoverLetterFile] =
-    useState<File | null>(null);
-   const [documents, setDocuments] =
-  useState<FileList | null>(null); 
-
-  // USER INFO
   const [firstName, setFirstName] =
-    useState("");
+  useState(storedUser.firstName || "");
 
-  const [middleName, setMiddleName] =
-    useState("");
+const [middleName, setMiddleName] =
+  useState(storedUser.middleName || "");
 
-  const [lastName, setLastName] =
-    useState("");
+const [lastName, setLastName] =
+  useState(storedUser.lastName || "");
 
-  const [preferredName, setPreferredName] =
-    useState("");
+const [preferredName, setPreferredName] =
+  useState(storedUser.preferredName || "");
 
-  const [phoneNumber, setPhoneNumber] =
-    useState("");
+const [phoneNumber, setPhoneNumber] =
+  useState(storedUser.phoneNumber || "");
+
 const [email, setEmail] =
-  useState("");
-  const [skills, setSkills] =
-    useState("");
+  useState(storedUser.email || "");
 
-  const [experience, setExperience] =
-    useState("");
+const [skills, setSkills] =
+  useState(
+    Array.isArray(storedUser.skills)
+      ? storedUser.skills.join(", ")
+      : storedUser.skills || ""
+  );
 
-  // ADDRESS
-  const [stateName, setStateName] =
-    useState("");
+const [experience, setExperience] =
+  useState(storedUser.experience || "");
 
-  const [city, setCity] =
-    useState("");
+const [stateName, setStateName] =
+  useState(storedUser.state || "");
 
-  const [addressLine1, setAddressLine1] =
-    useState("");
+const [city, setCity] =
+  useState(storedUser.city || "");
 
-  const [addressLine2, setAddressLine2] =
-    useState("");
+const [addressLine1, setAddressLine1] =
+  useState(
+    storedUser.addressLine1 || ""
+  );
 
-  const [zipCode, setZipCode] =
-    useState("");
+const [addressLine2, setAddressLine2] =
+  useState(
+    storedUser.addressLine2 || ""
+  );
 
-  const [website, setWebsite] =
-    useState("");
+const [zipCode, setZipCode] =
+  useState(storedUser.zipCode || "");
 
-  // WORK HISTORY
-  const [workHistory, setWorkHistory] =
-    useState([
+const [website, setWebsite] =
+  useState(storedUser.website || "");
+
+const [workHistory, setWorkHistory] =
+  useState(
+    storedUser.workHistory || [
       {
         company: "",
         positionTitle: "",
         currentPosition: "",
         startDate: "",
       },
-    ]);
+    ]
+  );
 
-  // EDUCATION
-  const [
-    educationHistory,
-    setEducationHistory,
-  ] = useState([
+const [
+  educationHistory,
+  setEducationHistory,
+] = useState(
+  storedUser.educationHistory || [
     {
       degreeName: "",
       degreeType: "",
@@ -83,18 +91,28 @@ const [email, setEmail] =
       startDate: "",
       endDate: "",
     },
-  ]);
+  ]
+);
 
-  // LANGUAGES
-  const [languages, setLanguages] =
-    useState([
+const [languages, setLanguages] =
+  useState(
+    storedUser.languages || [
       {
         language: "",
         writtenLevel: "",
         spokenLevel: "",
       },
-    ]);
+    ]
+  );
+ 
+const [resume, setResume] =
+  useState<File | null>(null);
 
+const [coverLetterFile, setCoverLetterFile] =
+  useState<File | null>(null);
+
+const [documents, setDocuments] =
+  useState<FileList | null>(null);
   const userId =
     typeof window !== "undefined"
       ? localStorage.getItem("userId")
@@ -230,39 +248,40 @@ if (documents) {
       }
 
       // API
-      await axios.post(
-        API.updateProfile,
-        formData,
-        {
-         
-        }
-      );
+    const response = await axios.post(
+  API.updateProfile,
+  formData
+);
 
       // SAVE LOCAL STORAGE
-      localStorage.setItem(
-        "user",
-        JSON.stringify({
-          firstName,
-          middleName,
-          lastName,
-          preferredName,
-          phoneNumber,
-          email,
-          skills,
-          experience,
+     localStorage.setItem(
+  "user",
+  JSON.stringify({
+    firstName,
+    middleName,
+    lastName,
+    preferredName,
+    phoneNumber,
+    email,
+    skills,
+    experience,
 
-          state: stateName,
-          city,
-          addressLine1,
-          addressLine2,
-          zipCode,
-          website,
+    state: stateName,
+    city,
+    addressLine1,
+    addressLine2,
+    zipCode,
+    website,
 
-          workHistory,
-          educationHistory,
-          languages,
-        })
-      );
+    workHistory,
+    educationHistory,
+    languages,
+
+    resume: response.data.resume,
+    coverLetter: response.data.coverLetter,
+    documents: response.data.documents,
+  })
+);
 
       alert(
         "Profile Updated Successfully"
@@ -307,18 +326,18 @@ if (documents) {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
             <input
-              type="text"
-              placeholder="First Name"
-              className="h-12 border px-4 bg-gray-100"
-              onChange={(e) =>
-                setFirstName(
-                  e.target.value
-                )
-              }
-            />
+  type="text"
+  value={firstName}
+  placeholder="First Name"
+ className="h-12 border px-4 bg-gray-100"
+  onChange={(e) =>
+    setFirstName(e.target.value)
+  }
+/>
 
             <input
               type="text"
+              value={middleName}
               placeholder="Middle Name"
               className="h-12 border px-4 bg-gray-100"
               onChange={(e) =>
@@ -330,6 +349,7 @@ if (documents) {
 
             <input
               type="text"
+              value={lastName}
               placeholder="Last Name"
               className="h-12 border px-4 bg-gray-100"
               onChange={(e) =>
@@ -341,6 +361,7 @@ if (documents) {
 
             <input
               type="text"
+              value={preferredName}
               placeholder="Preferred Name"
               className="h-12 border px-4 bg-gray-100"
               onChange={(e) =>
@@ -352,6 +373,7 @@ if (documents) {
 
             <input
               type="text"
+              value={phoneNumber}
               placeholder="Phone Number"
               className="h-12 border px-4 bg-gray-100"
               onChange={(e) =>
@@ -361,15 +383,17 @@ if (documents) {
               }
             />
              <input
-  type="email"
-  placeholder="Email"
-  className="h-12 border px-4 bg-gray-100"
-  onChange={(e) =>
+             type="email"
+             value={email}
+             placeholder="Email"
+            className="h-12 border px-4 bg-gray-100"
+             onChange={(e) =>
     setEmail(e.target.value)
   }
 />
             <input
               type="text"
+              value={skills}
               placeholder="Skills"
               className="h-12 border px-4 bg-gray-100"
               onChange={(e) =>
@@ -390,6 +414,7 @@ if (documents) {
 
             <input
               type="text"
+              value={stateName}
               placeholder="State"
               className="h-12 border px-4 bg-gray-100"
               onChange={(e) =>
@@ -401,6 +426,7 @@ if (documents) {
 
             <input
               type="text"
+              value={city}
               placeholder="City"
               className="h-12 border px-4 bg-gray-100"
               onChange={(e) =>
@@ -412,6 +438,7 @@ if (documents) {
 
             <input
               type="text"
+              value={addressLine1}
               placeholder="Address Line 1"
               className="h-12 border px-4 bg-gray-100"
               onChange={(e) =>
@@ -423,6 +450,7 @@ if (documents) {
 
             <input
               type="text"
+              value={addressLine2}
               placeholder="Address Line 2"
               className="h-12 border px-4 bg-gray-100"
               onChange={(e) =>
@@ -434,6 +462,7 @@ if (documents) {
 
             <input
               type="text"
+              value={zipCode}
               placeholder="Zip Code"
               className="h-12 border px-4 bg-gray-100"
               onChange={(e) =>
@@ -445,6 +474,7 @@ if (documents) {
 
             <input
               type="text"
+              value={website}
               placeholder="Website"
               className="h-12 border px-4 bg-gray-100"
               onChange={(e) =>
@@ -462,6 +492,7 @@ if (documents) {
             <textarea
               rows={5}
               placeholder="Experience"
+              value={experience}
               className="w-full border p-4 bg-gray-100"
               onChange={(e) =>
                 setExperience(
@@ -488,6 +519,7 @@ if (documents) {
 
                   <input
                     type="text"
+                    value={work.company}
                     placeholder="Company"
                     className="w-full h-12 border px-4 mb-4"
                     onChange={(e) => {
@@ -506,6 +538,7 @@ if (documents) {
 
                   <input
                     type="text"
+                    value={work.positionTitle}
                     placeholder="Position Title"
                     className="w-full h-12 border px-4 mb-4"
                     onChange={(e) => {
@@ -557,9 +590,10 @@ if (documents) {
 
                   <input
                     type="date"
+                    value={work.startDate}
                     className="w-full h-12 border px-4"
                     onChange={(e) => {
-
+                    
                       const updated =
                         [...workHistory];
 
@@ -614,6 +648,7 @@ if (documents) {
                 >
 <input
   type="text"
+  value={edu.degreeName}
   placeholder="Degree Name"
   className="w-full h-12 border px-4 mb-4"
   onChange={(e) => {
@@ -631,6 +666,7 @@ if (documents) {
 
 <input
   type="text"
+  value={edu.degreeType}
   placeholder="Degree Type"
   className="w-full h-12 border px-4 mb-4"
   onChange={(e) => {
@@ -648,6 +684,7 @@ if (documents) {
 
 <input
   type="text"
+  value={edu.university}
   placeholder="University"
   className="w-full h-12 border px-4 mb-4"
   onChange={(e) => {
@@ -665,6 +702,7 @@ if (documents) {
 
 <input
   type="date"
+  value={edu.startDate}
   className="w-full h-12 border px-4 mb-4"
   onChange={(e) => {
 
@@ -681,6 +719,7 @@ if (documents) {
 
 <input
   type="date"
+  value={edu.endDate}
   className="w-full h-12 border px-4"
   onChange={(e) => {
 
@@ -716,6 +755,7 @@ if (documents) {
                 >
 <input
   type="text"
+  value={lang.language}
   placeholder="Language"
   className="w-full h-12 border px-4 mb-4"
   onChange={(e) => {
@@ -731,6 +771,7 @@ if (documents) {
 
 <input
   type="text"
+  value={lang.writtenLevel}
   placeholder="Written Level"
   className="w-full h-12 border px-4 mb-4"
   onChange={(e) => {
@@ -746,6 +787,7 @@ if (documents) {
 
 <input
   type="text"
+  value={lang.spokenLevel}
   placeholder="Spoken Level"
   className="w-full h-12 border px-4"
   onChange={(e) => {
@@ -772,6 +814,7 @@ if (documents) {
              </label>
                <input
               type="file"
+              
               className="border p-3 bg-gray-100"
               onChange={(e) =>
                 setResume(
@@ -793,6 +836,7 @@ if (documents) {
              </label>
                  <input
               type="file"
+             
               className="border p-3 bg-gray-100"
               onChange={(e) =>
                 setCoverLetterFile(
