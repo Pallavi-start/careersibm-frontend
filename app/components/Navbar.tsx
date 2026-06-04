@@ -11,7 +11,7 @@ import EntryLevelPage from "./EntryLevelPage";
 import HiringProcess from "./HiringProcess"
 
 export default function Navbar() {
-  const [mobileMenu, setMobileMenu] = useState(false);
+const [mobileMenu, setMobileMenu] = useState(false);
 
   return (
     <div className="w-full bg-white border-b border-[#e0e0e0]">
@@ -280,7 +280,7 @@ export default function Navbar() {
             </Link>
 
             <Link
-              href="/life-at-ibm"
+              href="/LifeAtIBM"
               className="px-5 py-5 border-b border-gray-200"
             >
               Life @ IBM
@@ -293,19 +293,8 @@ export default function Navbar() {
               Career Areas
             </Link>
 
-            <Link
-              href="/entry-level"
-              className="px-5 py-5 border-b border-gray-200"
-            >
-              Entry level
-            </Link>
-
-            <Link
-              href="/hiring-process"
-              className="px-5 py-5 border-b border-gray-200"
-            >
-              Hiring Process
-            </Link>
+             <EntryLevelPage/>
+           <HiringProcess />
 
             <Link
               href="/recruitmentScams"
