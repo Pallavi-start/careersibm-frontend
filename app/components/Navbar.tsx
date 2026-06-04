@@ -279,12 +279,7 @@ const [mobileMenu, setMobileMenu] = useState(false);
               Overview
             </Link>
 
-            <Link
-              href="/LifeAtIBM"
-              className="px-5 py-5 border-b border-gray-200"
-            >
-              Life @ IBM
-            </Link>
+            <LifeAtIBM />
 
             <Link
               href="/career-areas"
