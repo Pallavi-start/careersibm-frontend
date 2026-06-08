@@ -110,7 +110,7 @@ export default function LoginPage() {
 
       alert("Login Successful");
 
-      router.push("/");
+      router.push("/dashboard");
 
     } catch (err) {
 

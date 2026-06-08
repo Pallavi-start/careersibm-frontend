@@ -4,7 +4,6 @@ import { useState } from "react";
 import { API } from "../lib/api";
 import { useRouter } from "next/navigation";
 import axios from "axios";
-import { FcGoogle } from "react-icons/fc";
 
 export default function OTP() {
 
@@ -23,10 +22,17 @@ export default function OTP() {
       setLoading(true);
       setError("");
 
-      await axios.post(API.verifyOtpUser, {
-        email,
-        otp,
-      });
+  const res = await axios.post(
+        API.verifyOtpUser,
+        {
+          email,
+          otp,
+        }
+      );
+
+      const token = res.data.token;
+
+      localStorage.setItem("token", token);
 
       router.push("/dashboard");
 
@@ -133,25 +139,7 @@ export default function OTP() {
         {/* GOOGLE */}
         <div className="flex justify-end mt-10">
 
-          <button
-            className="
-              border
-              border-[#0f62fe]
-              h-[58px]
-              px-6
-              flex
-              items-center
-              gap-5
-              text-[#0f62fe]
-              hover:bg-blue-50
-            "
-          >
-            <span className="text-[18px]">
-              Continue with Google
-            </span>
-
-            <FcGoogle size={28} />
-          </button>
+       
 
         </div>
 

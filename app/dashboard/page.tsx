@@ -1,6 +1,8 @@
 "use client";
 
 import Link from "next/link";
+import { useEffect, useState } from "react";
+import api from "../lib/axios";
 
 type UserType = {
   firstName?: string;
@@ -12,17 +14,20 @@ export default function DashboardLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const [user, setUser] = useState<UserType | null>(null);
 
-  // GET USER FROM LOCAL STORAGE
-  const storedUser =
-    typeof window !== "undefined"
-      ? localStorage.getItem("user")
-      : null;
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const res = await api.get("/api/get-profile");
+        setUser(res.data.user);
+      } catch (err) {
+        console.log(err);
+      }
+    };
 
-  const user: UserType =
-    storedUser
-      ? JSON.parse(storedUser)
-      : {};
+    fetchUser();
+  }, []);
 
   return (
     <div className="min-h-screen bg-white">
@@ -62,24 +67,20 @@ export default function DashboardLayout({
     {/* RIGHT HEADER PROFILE */}
     <div className="flex items-center gap-4">
 
-      <div className="text-right">
-       <p className="text-sm capitalize text-gray-700 font-medium mt-1">
+      <div className="flex items-center gap-4">
+            <div className="text-right">
+              <p className="text-sm capitalize text-gray-700 font-medium mt-1">
+                {user?.firstName} {user?.lastName}
+              </p>
+            </div>
 
-          {user.firstName}{" "}
-          {user.lastName}
-
-        </p>
-
-      </div>
+            <div className="w-11 h-11 rounded-full bg-blue-600 text-white flex items-center justify-center">
+              {user?.firstName?.charAt(0)?.toUpperCase()}
+            </div>
+          </div>
 
       {/* PROFILE IMAGE */}
-      <div className="w-11 h-11 rounded-full bg-blue-600 text-white flex items-center justify-center text-sm font-semibold">
-
-        {user.firstName
-          ?.charAt(0)
-          ?.toUpperCase()}
-
-      </div>
+     
 
     </div>
 

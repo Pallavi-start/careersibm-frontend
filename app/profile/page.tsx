@@ -1,306 +1,196 @@
 "use client";
 
-
 import { API } from "../lib/api";
 import { useRouter } from "next/navigation";
-import axios from "axios";
-import { useState } from "react";
+
+import { useState, useEffect } from "react";
+import api from "../lib/axios";
 
 export default function ProfilePage() {
-
   const router = useRouter();
-  const storedUser =
-  typeof window !== "undefined"
-    ? JSON.parse(
-        localStorage.getItem("user") || "{}"
-      )
-    : {};
 
-  // FILES
-  const [firstName, setFirstName] =
-  useState(storedUser.firstName || "");
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-const [middleName, setMiddleName] =
-  useState(storedUser.middleName || "");
+  // FORM STATES
+  const [firstName, setFirstName] = useState("");
+  const [middleName, setMiddleName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [preferredName, setPreferredName] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [email, setEmail] = useState("");
+  const [skills, setSkills] = useState([]);
+  const [experience, setExperience] = useState("");
+  const [stateName, setStateName] = useState("");
+  const [city, setCity] = useState("");
+  const [addressLine1, setAddressLine1] = useState("");
+  const [addressLine2, setAddressLine2] = useState("");
+  const [zipCode, setZipCode] = useState("");
+  const [website, setWebsite] = useState("");
 
-const [lastName, setLastName] =
-  useState(storedUser.lastName || "");
+ type WorkHistory = {
+  company?: string;
+  positionTitle?: string;
+  currentPosition?: string;
+  startDate?: string;
+};
 
-const [preferredName, setPreferredName] =
-  useState(storedUser.preferredName || "");
+const [workHistory, setWorkHistory] = useState<WorkHistory[]>([]);
+type EducationHistory = {
+  degreeName?: string;
+  degreeType?: string;
+  university?: string;
+  startDate?: string;
+  endDate?: string;
+};
 
-const [phoneNumber, setPhoneNumber] =
-  useState(storedUser.phoneNumber || "");
+type Language = {
+  language?: string;
+  writtenLevel?: string;
+  spokenLevel?: string;
+};
 
-const [email, setEmail] =
-  useState(storedUser.email || "");
+const [educationHistory, setEducationHistory] = useState<EducationHistory[]>([]);
+const [languages, setLanguages] = useState<Language[]>([]);
 
-const [skills, setSkills] =
-  useState(
-    Array.isArray(storedUser.skills)
-      ? storedUser.skills.join(", ")
-      : storedUser.skills || ""
-  );
+  const [resume, setResume] = useState(null);
+  const [coverLetterFile, setCoverLetterFile] = useState(null);
+  const [documents, setDocuments] = useState(null);
 
-const [experience, setExperience] =
-  useState(storedUser.experience || "");
+  // FETCH USER
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const res = await api.get("/api/get-profile",
+        );
 
-const [stateName, setStateName] =
-  useState(storedUser.state || "");
+        const data = res.data.user;
+        
+        setUser(data);
 
-const [city, setCity] =
-  useState(storedUser.city || "");
+        setFirstName(data.firstName || "");
+        setMiddleName(data.middleName || "");
+        setLastName(data.lastName || "");
+        setPreferredName(data.preferredName || "");
+        setPhoneNumber(data.phoneNumber || "");
+        setEmail(data.email || "");
+       setSkills(Array.isArray(data.skills) ? data.skills : []);
+        setExperience(data.experience || "");
+        setStateName(data.state || "");
+        setCity(data.city || "");
+        setAddressLine1(data.addressLine1 || "");
+        setAddressLine2(data.addressLine2 || "");
+        setZipCode(data.zipCode || "");
+        setWebsite(data.website || "");
+        setWorkHistory(data.workHistory || []);
+        setEducationHistory(data.educationHistory || []);
+        setLanguages(data.languages || []);
+      } catch (err) {
+        console.log(err);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-const [addressLine1, setAddressLine1] =
-  useState(
-    storedUser.addressLine1 || ""
-  );
+    fetchProfile();
+  }, []);
 
-const [addressLine2, setAddressLine2] =
-  useState(
-    storedUser.addressLine2 || ""
-  );
-
-const [zipCode, setZipCode] =
-  useState(storedUser.zipCode || "");
-
-const [website, setWebsite] =
-  useState(storedUser.website || "");
-
-const [workHistory, setWorkHistory] =
-  useState(
-    storedUser.workHistory || [
-      {
-        company: "",
-        positionTitle: "",
-        currentPosition: "",
-        startDate: "",
-      },
-    ]
-  );
-
-const [
-  educationHistory,
-  setEducationHistory,
-] = useState(
-  storedUser.educationHistory || [
-    {
-      degreeName: "",
-      degreeType: "",
-      university: "",
-      startDate: "",
-      endDate: "",
-    },
-  ]
-);
-
-const [languages, setLanguages] =
-  useState(
-    storedUser.languages || [
-      {
-        language: "",
-        writtenLevel: "",
-        spokenLevel: "",
-      },
-    ]
-  );
  
-const [resume, setResume] =
-  useState<File | null>(null);
-
-const [coverLetterFile, setCoverLetterFile] =
-  useState<File | null>(null);
-
-const [documents, setDocuments] =
-  useState<FileList | null>(null);
-  const userId =
-    typeof window !== "undefined"
-      ? localStorage.getItem("userId")
-      : null;
-
+    const isDifferent = (a, b) =>
+    JSON.stringify(a ?? "") !== JSON.stringify(b ?? "");
+   
+  const isDifferentArray = (a, b) =>
+  JSON.stringify(a || []) !== JSON.stringify(b || []);
+ 
   const handleProfile = async () => {
-
     try {
+      if (!user) return;
 
       const formData = new FormData();
 
-      // FILES
-      if (resume) {
-        formData.append(
-          "resume",
-          resume
-        );
-      }
-
-      if (coverLetterFile) {
-        formData.append(
-          "coverLetter",
-          coverLetterFile
-        );
-      }
-if (documents) {
-
-  for (
-    let i = 0;
-    i < documents.length;
-    i++
-  ) {
-    formData.append(
-      "documents",
-      documents[i]
-    );
-  }
-}
       // BASIC INFO
-      formData.append(
-        "firstName",
-        firstName
-      );
+      if (isDifferent(firstName, user.firstName))
+        formData.append("firstName", firstName);
 
-      formData.append(
-        "middleName",
-        middleName
-      );
+      if (isDifferent(middleName, user.middleName))
+        formData.append("middleName", middleName);
 
-      formData.append(
-        "lastName",
-        lastName
-      );
+      if (isDifferent(lastName, user.lastName))
+        formData.append("lastName", lastName);
 
-      formData.append(
-        "preferredName",
-        preferredName
-      );
+      if (isDifferent(preferredName, user.preferredName))
+        formData.append("preferredName", preferredName);
 
-      formData.append(
-        "phoneNumber",
-        phoneNumber
-      );
+      if (isDifferent(phoneNumber, user.phoneNumber))
+        formData.append("phoneNumber", phoneNumber);
 
-      formData.append(
-        "skills",
-        skills
-      );
+      if (isDifferent(email, user.email))
+        formData.append("email", email);
 
-      formData.append(
-        "experience",
-        experience
-      );
-     formData.append(
-        "email",
-        email
-     );
+     if (isDifferent(skills, user.skills))
+  formData.append("skills", JSON.stringify(skills));
+
+      if (isDifferent(experience, user.experience))
+        formData.append("experience", experience);
+
       // ADDRESS
-      formData.append(
-        "state",
-        stateName
-      );
+      if (isDifferent(stateName, user.state))
+        formData.append("state", stateName);
 
-      formData.append(
-        "city",
-        city
-      );
+      if (isDifferent(city, user.city))
+        formData.append("city", city);
 
-      formData.append(
-        "addressLine1",
-        addressLine1
-      );
+      if (isDifferent(addressLine1, user.addressLine1))
+        formData.append("addressLine1", addressLine1);
 
-      formData.append(
-        "addressLine2",
-        addressLine2
-      );
+      if (isDifferent(addressLine2, user.addressLine2))
+        formData.append("addressLine2", addressLine2);
 
-      formData.append(
-        "zipCode",
-        zipCode
-      );
+      if (isDifferent(zipCode, user.zipCode))
+        formData.append("zipCode", zipCode);
 
-      formData.append(
-        "website",
-        website
-      );
+      if (isDifferent(website, user.website))
+        formData.append("website", website);
 
-      // ARRAY DATA
-      formData.append(
-        "workHistory",
-        JSON.stringify(workHistory)
-      );
+    
+       if (isDifferentArray(workHistory, user.workHistory)) {
+         formData.append("workHistory", JSON.stringify(workHistory));
+        }
 
-      formData.append(
-        "educationHistory",
-        JSON.stringify(
-          educationHistory
-        )
-      );
+      if (isDifferentArray(educationHistory, user.educationHistory)) {
+       formData.append("educationHistory", JSON.stringify(educationHistory));
+        }
 
-      formData.append(
-        "languages",
-        JSON.stringify(languages)
-      );
+      if (isDifferentArray(languages, user.languages)) {
+  formData.append("languages", JSON.stringify(languages));
+}
 
-      // USER ID
-      if (userId) {
-        formData.append(
-          "userId",
-          userId
-        );
+      // FILES
+      if (resume) formData.append("resume", resume);
+      if (coverLetterFile) formData.append("coverLetter", coverLetterFile);
+
+      if (documents) {
+        for (let i = 0; i < documents.length; i++) {
+          formData.append("documents", documents[i]);
+        }
       }
 
-      // API
-    const response = await axios.post(
-  API.updateProfile,
-  formData
-);
-console.log(response.data.profile);
-      // SAVE LOCAL STORAGE
-     localStorage.setItem(
-  "user",
-  JSON.stringify({
-    firstName,
-    middleName,
-    lastName,
-    preferredName,
-    phoneNumber,
-    email,
-    skills,
-    experience,
+      // API CALL
+     await api.post(API.updateProfile, formData);
 
-    state: stateName,
-    city,
-    addressLine1,
-    addressLine2,
-    zipCode,
-    website,
+      alert("Profile Updated Successfully");
 
-    workHistory,
-    educationHistory,
-    languages,
-
-    resume: response.data.profile.resume,
-coverLetter: response.data.profile.coverLetter,
-documents: response.data.profile.documents,
-  })
-);
-
-      alert(
-        "Profile Updated Successfully"
-      );
-
-      router.push(
-        "/your-information"
-      );
-
+      router.refresh();
+      router.push("/your-information");
     } catch (err) {
-
       console.log(err);
-
-      alert(
-        "Failed to update profile"
-      );
+      alert("Failed to update profile");
     }
   };
 
+  if (loading) return <div>Loading...</div>;
+  if (!user) return <div>No user found</div>;
+ 
   return (
     <div className="min-h-screen py-10 ">
 
@@ -393,14 +283,17 @@ documents: response.data.profile.documents,
 />
             <input
               type="text"
-              value={skills}
+             value={skills.join(", ")}
+onChange={(e) =>
+  setSkills(
+    e.target.value.split(",").map(s => s.trim())
+  )
+
+}
               placeholder="Skills"
               className="h-12 border px-4 bg-gray-100"
-              onChange={(e) =>
-                setSkills(
-                  e.target.value
-                )
-              }
+            
+              
             />
 
           </div>
@@ -519,7 +412,7 @@ documents: response.data.profile.documents,
 
                   <input
                     type="text"
-                    value={work.company}
+                    value={work.company || ""}
                     placeholder="Company"
                     className="w-full h-12 border px-4 mb-4"
                     onChange={(e) => {
@@ -538,7 +431,7 @@ documents: response.data.profile.documents,
 
                   <input
                     type="text"
-                    value={work.positionTitle}
+                    value={work.positionTitle ||""}
                     placeholder="Position Title"
                     className="w-full h-12 border px-4 mb-4"
                     onChange={(e) => {
@@ -590,7 +483,7 @@ documents: response.data.profile.documents,
 
                   <input
                     type="date"
-                    value={work.startDate}
+                    value={work.startDate || ""}
                     className="w-full h-12 border px-4"
                     onChange={(e) => {
                     
@@ -648,7 +541,7 @@ documents: response.data.profile.documents,
                 >
 <input
   type="text"
-  value={edu.degreeName}
+  value={edu.degreeName || ""}
   placeholder="Degree Name"
   className="w-full h-12 border px-4 mb-4"
   onChange={(e) => {
@@ -666,7 +559,7 @@ documents: response.data.profile.documents,
 
 <input
   type="text"
-  value={edu.degreeType}
+  value={edu.degreeType ||""}
   placeholder="Degree Type"
   className="w-full h-12 border px-4 mb-4"
   onChange={(e) => {
@@ -702,7 +595,7 @@ documents: response.data.profile.documents,
 
 <input
   type="date"
-  value={edu.startDate}
+  value={edu.startDate || ""}
   className="w-full h-12 border px-4 mb-4"
   onChange={(e) => {
 
@@ -719,7 +612,7 @@ documents: response.data.profile.documents,
 
 <input
   type="date"
-  value={edu.endDate}
+  value={edu.endDate || ""}
   className="w-full h-12 border px-4"
   onChange={(e) => {
 
@@ -737,7 +630,24 @@ documents: response.data.profile.documents,
                 </div>
               )
             )}
-
+           <button
+  type="button"
+  className="text-blue-600"
+  onClick={() =>
+    setEducationHistory([
+      ...educationHistory,
+      {
+        degreeName: "",
+        degreeType: "",
+        university: "",
+        startDate: "",
+        endDate: "",
+      },
+    ])
+  }
+>
+  + Add Education
+</button>
           </div>
 
           {/* LANGUAGE */}
@@ -803,7 +713,22 @@ documents: response.data.profile.documents,
                 </div>
               )
             )}
-
+            <button
+  type="button"
+  className="text-blue-600"
+  onClick={() =>
+    setLanguages([
+      ...languages,
+      {
+        language: "",
+        writtenLevel: "",
+        spokenLevel: "",
+      },
+    ])
+  }
+>
+  + Add Language
+</button>
           </div>
 
           {/* FILES */}
