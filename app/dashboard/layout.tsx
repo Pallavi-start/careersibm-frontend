@@ -91,7 +91,7 @@ export default function DashboardLayout({
       {/* NAVIGATION */}
       <div className="max-w-7xl mx-auto px-6 py-4 flex gap-6 border-b">
         <Link href="/search-jobs">Job search</Link>
-        <Link href="/dashboard/your-information">Your info</Link>
+        <Link href="/dashboard/your-information">Your information</Link>
         <Link href="/dashboard/your-job">Your jobs</Link>
         <Link href="/dashboard/your-application">Applications</Link>
         <Link  href="/dashboard/myoffer/">My offer</Link>
