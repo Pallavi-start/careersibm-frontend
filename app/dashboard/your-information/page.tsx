@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import api from "../lib/axios";
+import api from "../../lib/axios";
+
 type WorkHistory = {
   company?: string;
   positionTitle?: string;

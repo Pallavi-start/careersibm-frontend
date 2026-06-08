@@ -34,7 +34,7 @@ export default function OTP() {
 
       localStorage.setItem("token", token);
 
-      router.push("/dashboard");
+      router.push("/dashboard/your-information");
 
     } catch (err: unknown) {
 

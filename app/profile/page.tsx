@@ -181,7 +181,7 @@ const [languages, setLanguages] = useState<Language[]>([]);
       alert("Profile Updated Successfully");
 
       router.refresh();
-      router.push("/your-information");
+      router.push("/dashboard/your-information");
     } catch (err) {
       console.log(err);
       alert("Failed to update profile");

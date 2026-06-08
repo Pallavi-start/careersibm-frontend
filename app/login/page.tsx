@@ -64,7 +64,7 @@ export default function LoginPage() {
 
       localStorage.setItem("token", token);
 
-      router.push("/dashboard");
+      router.push("/dashboard/your-information");
 
     } catch (err: unknown) {
 
@@ -110,7 +110,7 @@ export default function LoginPage() {
 
       alert("Login Successful");
 
-      router.push("/dashboard");
+      router.push("/dashboard/your-information");
 
     } catch (err) {
 
